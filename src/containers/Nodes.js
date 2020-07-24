@@ -23,6 +23,10 @@ export class Nodes extends React.Component {
     this.setState({
       expandedNodeURL:
         node.url === this.state.expandedNodeURL ? null : node.url,
+    }, () => {
+      if (node.url === this.state.expandedNodeURL) {
+        this.props.actions.getNodeBlocks(node);
+      }
     });
   }
 

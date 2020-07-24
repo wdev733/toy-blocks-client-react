@@ -92,4 +92,110 @@ describe('Reducers::Nodes', () => {
 
     expect(reducer(appState, action)).toEqual(expected);
   });
+
+  it('should handle GET_NODE_BLOCKS_START', () => {
+    const appState = {
+      list: [nodeA, nodeB]
+    };
+    const action = { type: ActionTypes.CHECK_NODE_STATUS_START, node: nodeA };
+    const expected = {
+      list: [
+        {
+          ...nodeA,
+          loading: true,
+        },
+        nodeB
+      ]
+    };
+
+    expect(reducer(appState, action)).toEqual(expected);
+  });
+
+  it('should handle GET_NODE_BLOCKS_SUCCESS', () => {
+    const appState = {
+      list: [nodeA, nodeB]
+    };
+    const action = { 
+      type: ActionTypes.GET_NODE_BLOCKS_SUCCESS, 
+      node: nodeA, 
+      res: {
+        "data": [
+          {
+            "id": "1",
+            "type": "blocks",
+            "attributes": {
+                "index": 1,
+                "timestamp": 1530677153,
+                "data": "By reason of these things",
+                "previous-hash": "KsmmdGrKVDr43/OYlM/oFzr7oh6wHG+uM9UpRyIoVe8=",
+                "hash": "nzl9y9lf4NdSQZCw293n5ICLniP6GnWecWcvAjWKjnc="
+            }
+          },
+        ]
+      } 
+    };
+    const expected = {
+      list: [
+        {
+          ...nodeA,
+          online: true,
+          loading: false,
+          blocks: [
+            {
+              "id": "1",
+              "type": "blocks",
+              "attributes": {
+                  "index": 1,
+                  "timestamp": 1530677153,
+                  "data": "By reason of these things",
+                  "previous-hash": "KsmmdGrKVDr43/OYlM/oFzr7oh6wHG+uM9UpRyIoVe8=",
+                  "hash": "nzl9y9lf4NdSQZCw293n5ICLniP6GnWecWcvAjWKjnc="
+              }
+            },
+          ]
+        },
+        nodeB
+      ]
+    };
+
+    expect(reducer(appState, action)).toEqual(expected);
+  });
+
+  it('should handle GET_NODE_BLOCKS_FAILURE', () => {
+    const appState = {
+      list: [
+        {
+          ...nodeA,
+          loading: false,
+          blocks: [
+            {
+              "id": "1",
+              "type": "blocks",
+              "attributes": {
+                  "index": 1,
+                  "timestamp": 1530677153,
+                  "data": "By reason of these things",
+                  "previous-hash": "KsmmdGrKVDr43/OYlM/oFzr7oh6wHG+uM9UpRyIoVe8=",
+                  "hash": "nzl9y9lf4NdSQZCw293n5ICLniP6GnWecWcvAjWKjnc="
+              }
+            },
+          ]
+        },
+        nodeB
+      ]
+    };
+    const action = { type: ActionTypes.GET_NODE_BLOCKS_FAILURE, node: nodeA };
+    const expected = {
+      list: [
+        {
+          ...nodeA,
+          loading: false,
+          blocks: []
+        },
+        nodeB
+      ]
+    };
+
+    expect(reducer(appState, action)).toEqual(expected);
+  });
 });
